@@ -1,22 +1,44 @@
 
+// const express = require('express');
+// const bodyparser = require('body-parser');
+// const app = express();
+
+
+// app.use(bodyparser.urlencoded({extended: false}));
+
+// app.use('/add-product', (req, res, next) => {
+//   res.send('<form action="/product" method="POST">' + '<input type="text" name = "title">' +
+//   '<input type="text" name="size">' + '<button type="submit">Add product</button></input></form>')
+// })
+
+// app.post('/product', (req, res, next) => {
+//   console.log(req.body);
+//   res.redirect('/')
+// })
+// app.use('/',(req, res, next) => {
+//     res.send('<h1> Hello from rxpress</h1>');
+// });
+
+// app.listen(2001)
+
+
+
+
+//////--lec-11
+
+
 const express = require('express');
 const bodyparser = require('body-parser');
 const app = express();
-
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
 app.use(bodyparser.urlencoded({extended: false}));
 
-app.use('/add-product', (req, res, next) => {
-  res.send('<form action="/product" method="POST">' + '<input type="text" name = "title">' +
-  '<input type="text" name="size">' + '<button type="submit">Add product</button></input></form>')
-})
+app.use('/admin',adminRoutes);
+app.use('/shop',shopRoutes);
 
-app.post('/product', (req, res, next) => {
-  console.log(req.body);
-  res.redirect('/')
+app.use((req, res, next) => {
+  res.status(404).send('<h1>page not found</h1>')
 })
-app.use('/',(req, res, next) => {
-    res.send('<h1> Hello from rxpress</h1>');
-});
-
 app.listen(2001)
