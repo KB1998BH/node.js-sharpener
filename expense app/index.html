@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <h2>Sign Up for Expense App</h2>
-        <form id="signup-form">
+        <form onsubmit="savetopostman(event)">
             <div class="form-group">
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" required>
@@ -19,15 +19,127 @@
                 <input type="email" id="email" name="email" required>
             </div>
             <div class="form-group">
-                <label for="phone">Phone Number:</label>
-                <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" required>
-            </div>
-            <div class="form-group">
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required>
             </div>
             <button type="submit">Sign Up</button>
         </form>
+        <ul id='listOfUsers'></ul>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js" integrity="sha512-PJa3oQSLWRB7wHZ7GQ/g+qyv6r4mbuhmiDb8BjSFZ8NZ2a42oTtAq5n0ucWAwcQDlikAtkub+tPVCw4np27WCg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        
+    <script>
+        function savetopostman(event){
+                event.preventDefault();
+                const name = event.target.name.value;
+                const email = event.target.email.value;
+                const password = event.target.password.value;
+
+
+                const obj = {
+                    name,
+                    email,
+                    password
+                }
+
+                axios.post("http://localhost:5510/user/add-user", obj)
+                .then((response) => {
+                    console.log(response);
+                    //showNewUserOnScreen(response.data.userdetails)
+                })
+                .catch((err) =>{
+                    console.log(err);
+                })
+            }
+    </script>
 </body>
-</html>
+</html> -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense App Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <form onsubmit="savetopostman(event)"></form>
+    <div class="container">
+        <h2 id="login-heading">Login to Expense App</h2>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <div id="signup-container" style="display: none;">
+            <h2>Sign Up for Expense App</h2>
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+        
+        <p id="signup-link">Don't have an account? <a href="#" id="signup-toggle">Sign up here.</a></p>
+    </div>
+
+</form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js" integrity="sha512-PJa3oQSLWRB7wHZ7GQ/g+qyv6r4mbuhmiDb8BjSFZ8NZ2a42oTtAq5n0ucWAwcQDlikAtkub+tPVCw4np27WCg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        
+    
+    <script>
+        document.getElementById("signup-toggle").addEventListener("click", function(event) {
+            event.preventDefault();
+            document.getElementById("login-heading").style.display = "none";
+            document.getElementById("login-form").style.display = "none";
+            document.getElementById("signup-container").style.display = "block";
+        });
+
+        function savetopostman(event){
+                event.preventDefault();
+                const name = event.target.name.value;
+                const email = event.target.email.value;
+                const password = event.target.password.value;
+
+
+                const obj = {
+                    name,
+                    email,
+                    password
+                }
+
+                axios.post("http://localhost:5510/user/add-user", obj)
+                .then((response) => {
+                    console.log(response);
+                    //showNewUserOnScreen(response.data.userdetails)
+                })
+                .catch((err) =>{
+                    console.log(err);
+                })
+            }
+    </script>
+</body>
+</html> -->
+
+
+
+
