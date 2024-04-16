@@ -28,7 +28,7 @@ app.use('/user', userRoutes)
 
 
 sequelize
-  .sync({force:true})
+  .sync()
  
 .then(result => {
     //console.log(result);
