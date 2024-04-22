@@ -39,13 +39,12 @@ function login(e){
 
     console.log(loginDetails);
 
-    axios.post("http://localhost:5510/user/loginDetails").then(response => {
-       if(response.status === 200){
-        alert(response.data.message)
-       }else{
-        throw new Error(response.data.message);
-       }
-    }).catch(err => {
+    axios.post('http://localhost:5510/user/login', loginDetails)
+        .then((response) => {
+           // alert(response.data.message);
+            window.location.href = "../Expense/index1.html";
+        })
+    .catch(err => {
         console.log(JSON.stringify(err));
         document.body.innerHTML += `<div style= "color:red;">${err.message}</div>`
     });

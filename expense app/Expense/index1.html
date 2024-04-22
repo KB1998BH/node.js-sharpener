@@ -1,0 +1,85 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense App</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Expense Tracker</h1>
+        <form onsubmit="addNewExpenses(event)">
+            <label for="expenseAmount">Choose ExpenseAmount:</label>
+            <input type="number" name="expenseamount" required>
+            <label for="description">Choose Description:</label>
+            <input type="text" name="description" required>
+            <label for="Choose Category">Choose a Category</label>
+            <select id="category" name="category">
+                <option value="fuel">fuel</option>
+                <option value="food">food</option>
+                <option value="electricity">electricity</option>
+                <option value="movie">movie</option>
+            </select>
+            <button type="submit">Add Expense</button>
+        </form>
+    </div>
+    <ul id="listOfExpenses"></ul>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js" integrity="sha512-PJa3oQSLWRB7wHZ7GQ/g+qyv6r4mbuhmiDb8BjSFZ8NZ2a42oTtAq5n0ucWAwcQDlikAtkub+tPVCw4np27WCg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        function addNewExpenses(e){
+            e.preventDefault();
+
+            const expenseDetails = {
+                expenseamount: e.target.expenseamount.value,
+                description: e.target.description.value,
+                category: e.target.category.value
+            }
+            console.log(expenseDetails);
+            axios.post('http://localhost:5510/expense/addexpense', expenseDetails)
+            .then((response) => {
+                addNewExpensestoUI(response.data.expense);
+            }).catch(err => showError(err));
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            axios.get('http://localhost:5510/expense/getexpenses')
+            .then((response) => {
+                response.data.expenses.forEach(expense => {
+                    addNewExpensestoUI(expense);
+                })
+            })
+            .catch((err) => {
+                console.log("bad error");
+            })
+        })
+
+        function addNewExpensestoUI(expense){
+            const parentElement = document.getElementById('listOfExpenses');
+            const expenseElemId = `expense-${expense.id}`;
+            parentElement.innerHTML += `
+            <li id=${expenseElemId}>
+                ${expense.expenseamount} - ${expense.category} - ${expense.description}
+                <button onclick='deleteExpense(event, ${expense.id})'>
+                    Delete Expense
+                </button>
+            </li>
+            `
+        }
+
+        function deleteExpense(e, expenseid){
+            axios.delete(`http://localhost:5510/expense/deleteexpense/${expenseid}`).then((response) =>{
+                removeExpensefromUI(expenseid);
+            }).catch((err => {
+                showError(err);
+            }))
+        }
+        function removeExpensefromUI(expenseid){
+            const expenseElemId = `expense-${expenseid}`;
+            document.getElementById(expenseElemId).remove();
+        }
+    </script>
+</body>
+</html>
