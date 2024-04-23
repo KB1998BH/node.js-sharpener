@@ -31,6 +31,9 @@ app.use('/expense', userExpense);
 // app.use(errorController.get404);
 
 
+User.hasMany(Expense);
+Expense.belongsTo(User);
+
 sequelize
   .sync()
  

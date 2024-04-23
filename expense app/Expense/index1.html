@@ -35,17 +35,20 @@
             const expenseDetails = {
                 expenseamount: e.target.expenseamount.value,
                 description: e.target.description.value,
-                category: e.target.category.value
+                category: e.target.category.value,
+                
             }
             console.log(expenseDetails);
-            axios.post('http://localhost:5510/expense/addexpense', expenseDetails)
+            const token = localStorage.getItem('token');
+            axios.post('http://localhost:5510/expense/addexpense', expenseDetails, { headers:{"Authorization": token}})
             .then((response) => {
                 addNewExpensestoUI(response.data.expense);
             }).catch(err => showError(err));
         }
 
         window.addEventListener("DOMContentLoaded", () => {
-            axios.get('http://localhost:5510/expense/getexpenses')
+            const token = localStorage.getItem('token');
+            axios.get('http://localhost:5510/expense/getexpenses', { headers:{"Authorization": token}})
             .then((response) => {
                 response.data.expenses.forEach(expense => {
                     addNewExpensestoUI(expense);
@@ -70,7 +73,8 @@
         }
 
         function deleteExpense(e, expenseid){
-            axios.delete(`http://localhost:5510/expense/deleteexpense/${expenseid}`).then((response) =>{
+            const token = localStorage.getItem('token');
+            axios.delete(`http://localhost:5510/expense/deleteexpense/${expenseid}`, {headers:{"Authorization":token}}).then((response) =>{
                 removeExpensefromUI(expenseid);
             }).catch((err => {
                 showError(err);
@@ -79,6 +83,10 @@
         function removeExpensefromUI(expenseid){
             const expenseElemId = `expense-${expenseid}`;
             document.getElementById(expenseElemId).remove();
+        }
+
+        function showError(err){
+            document.body.innerHTML += `<div style="color:red;"> ${err}</div>`
         }
     </script>
 </body>

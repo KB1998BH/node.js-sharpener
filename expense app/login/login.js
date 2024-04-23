@@ -41,7 +41,9 @@ function login(e){
 
     axios.post('http://localhost:5510/user/login', loginDetails)
         .then((response) => {
-           // alert(response.data.message);
+            alert(response.data.message);
+            console.log(response.data);
+            localStorage.setItem('token', response.data.token)
             window.location.href = "../Expense/index1.html";
         })
     .catch(err => {
