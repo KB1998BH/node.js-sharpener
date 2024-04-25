@@ -23,6 +23,10 @@ const User = sequelize.define('user', {
     password: {
         type: Sequelize.STRING, // Use STRING for password hashes
         allowNull: false // Assuming password is required
+    },
+
+    ispremiumuser: {
+        type: Sequelize.BOOLEAN,
     }
 });
 
