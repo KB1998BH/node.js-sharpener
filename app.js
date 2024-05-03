@@ -1,27 +1,63 @@
+
 const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const errorController = require('./controllers/error');
-const db = require('./util/database')
+// const errorController = require('./controllers/error');
+const sequelize = require('./util/database')
 
+const User = require('./models/user');
+const Expense = require('./models/expense');
+const Order = require('./models/orders');
+const ForgotPassword = require('./models/forgotpassword')
+
+var cors = require('cors');
 const app = express();
 
-app.set('view engine', 'ejs');
-app.set('views', 'views');
+app.use(cors())
+const userRoutes = require('./routes/user');
+const userExpense = require('./routes/expense');
+const purchaseRoutes = require('./routes/purchase');
+const premiumFeatureRoutes = require('./routes/premiumFeature');
+const resetpassword = require('./routes/resetpassword')
 
-const adminRoutes = require('./routes/admin');
-const shopRoutes = require('./routes/shop');
 
-db.execute('SELECT * FROM products');
-
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/admin', adminRoutes);
-app.use(shopRoutes);
+const dotenv = require('dotenv');
+//get config vars 
+dotenv.config();
 
-app.use(errorController.get404);
+app.use('/user', userRoutes);
+app.use('/expense', userExpense);
+app.use('/purchase', purchaseRoutes)
+app.use('/premium', premiumFeatureRoutes)
+app.use('/password', resetpassword)
 
-app.listen(2000);
+// app.use(errorController.get404);
+
+
+
+
+User.hasMany(Expense);
+Expense.belongsTo(User);
+
+User.hasMany(Order);
+Order.belongsTo(User);
+
+User.hasMany(ForgotPassword);
+ForgotPassword.belongsTo(User)
+
+sequelize
+  .sync()
+ 
+.then(result => {
+    //console.log(result);
+    app.listen(5510);
+})
+.catch(err => {
+    console.log(err);
+})
