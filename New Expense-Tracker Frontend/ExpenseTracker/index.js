@@ -22,18 +22,62 @@ function addNewExpense(e){
 
 }
 
-window.addEventListener('load', ()=> {
-    axios.get('http://localhost:5510/user/getexpenses', { headers: {"Authorization" : token} }).then(response => {
-        if(response.status === 200){
-            response.data.expenses.forEach(expense => {
 
-                addNewExpense(expense);
-            })
-        } else {
-            throw new Error();
-        }
+function showPremiumuserMessage(){
+    document.getElementById('rzp-button1').style.visibility = "hidden"
+    document.getElementById('message').innerHTML = "you are a premium user"
+    showLeaderboard();
+}
+
+
+window.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem('token');
+    const decodeToken = parseJwt(token);
+    console.log(decodeToken);
+    const ispremiumuser = decodeToken.ispremiumuser
+    if(ispremiumuser){
+        showPremiumuserMessage()
+    }
+    axios.get('http://localhost:5510/expense/getexpenses', { headers:{"Authorization": token}})
+    .then((response) => {
+        response.data.expenses.forEach(expense => {
+            addNewExpensestoUI(expense);
+        })
     })
-});
+    .catch((err) => {
+        console.log("bad error");
+    })
+})
+
+function showLeaderboard() {
+    const leaderboardContainer = document.createElement("div");
+     leaderboardContainer.id = "leaderboardContainer";
+
+    const inputElement = document.createElement("input");
+    inputElement.type = "button";
+    inputElement.value = 'Show Leaderboard';
+    inputElement.onclick = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            const userLeaderBoardArray = await axios.get('http://localhost:5510/premium/showleaderboard', { headers: { "Authorization": token } });
+            console.log(userLeaderBoardArray);
+
+           // var leaderboardContainer = document.getElementById('leaderboard');
+            leaderboardContainer.innerHTML = '<h1> Leader Board </h1>'
+            userLeaderBoardArray.data.forEach((userDetails) => {
+                leaderboardContainer.innerHTML += `<li> Name - ${userDetails.name} Total Expense - ${userDetails.totalExpenses}</li>`;
+            });
+
+            // Append leaderboard container to the message div
+            document.getElementById("message").appendChild(leaderboardContainer);
+         } catch (error) {
+            console.error("Error fetching leaderboard:", error);
+         }
+    };
+
+    document.getElementById("message").appendChild(inputElement);
+}
+
 
 function addNewExpensetoUI(expense){
     const parentElement = document.getElementById('listOfExpenses');
@@ -67,6 +111,26 @@ function showError(err){
 function removeExpensefromUI(expenseid){
     const expenseElemId = `expense-${expenseid}`;
     document.getElementById(expenseElemId).remove();
+}
+
+
+
+function download(){
+    axios.get('http://localhost:5510/user/download', { headers: {"Authorization": token}})
+    .then((response) => {
+        if(response.status === 200){
+            //the backend is essentially sending a download link
+            //which if we open in browser, the file would downloaded
+            var a = document.createElement("a");
+            a.href = response.data.fileUrl;
+            a.click();
+        }else{
+            throw new Error(response.data.message)
+        }
+    })
+    .catch((err) => {
+        showError(err)
+    });
 }
 
 
