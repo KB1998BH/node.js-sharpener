@@ -41,7 +41,7 @@ window.addEventListener("DOMContentLoaded", () => {
     axios.get('http://localhost:5510/expense/getexpenses', { headers:{"Authorization": token}})
     .then((response) => {
         response.data.expenses.forEach(expense => {
-            addNewExpensestoUI(expense);
+            addNewExpense(expense);
         })
     })
     .catch((err) => {
@@ -122,7 +122,8 @@ function download(){
             //the backend is essentially sending a download link
             //which if we open in browser, the file would downloaded
             var a = document.createElement("a");
-            a.href = response.data.fileUrl;
+            a.href = response.data.fileURL;
+            a.download = 'myexpense.csv';
             a.click();
         }else{
             throw new Error(response.data.message)
