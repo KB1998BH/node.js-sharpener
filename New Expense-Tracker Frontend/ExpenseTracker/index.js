@@ -331,7 +331,7 @@
 
 const token = localStorage.getItem('token');
 let currentPage = 1;
-const itemsPerPage = 10;
+const itemsPerPage = calcaluteItemsPerpage();
 
 function addNewExpense(e) {
     e.preventDefault();
@@ -350,9 +350,25 @@ function addNewExpense(e) {
     }).catch(err => showError(err));
 }
 
+function calcaluteItemsPerpage(){
+    const screenWidth = window.innerWidth;
+    if(screenWidth<600){
+        return 5;
+    }else if(screenWidth<1200){
+        return 10
+    }else{
+        return 20;
+    }
+}
+
 window.addEventListener('load', () => {
     loadExpenses(currentPage);
 });
+
+window.addEventListener('resize', () => {
+    itemsPerPage = calcaluteItemsPerpage();
+    loadExpenses(currentPage)
+})
 
 function loadExpenses(page) {
     axios.get(`http://localhost:5510/user/getexpenses?page=${page}&limit=${itemsPerPage}`, { headers: {"Authorization": token} }).then(response => {
