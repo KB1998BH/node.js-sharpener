@@ -16,14 +16,51 @@ const addexpense = (req, res) => {
 }
 
 
-const getexpenses = (req, res)=> {
-    req.user.getExpenses().then(expenses => {
-        return res.status(200).json({expenses, success: true})
-    })
-    .catch(err => {
-        return res.status(402).json({ error: err, success: false})
-    })
-}
+// const getexpenses = (req, res)=> {
+//     req.user.getExpenses().then(expenses => {
+//         return res.status(200).json({expenses, success: true})
+//     })
+//     .catch(err => {
+//         return res.status(402).json({ error: err, success: false})
+//     })
+// }
+
+
+const getexpenses = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const offset = (page - 1) * limit;
+
+        // Fetch paginated expenses and total count
+        const result = await Expense.findAndCountAll({
+            where: { userId },
+            limit: limit,
+            offset: offset
+        });
+
+        const expenses = result.rows;
+        const totalItems = result.count;
+        const totalPages = Math.ceil(totalItems / limit);
+
+        res.status(200).json({
+            expenses,
+            totalItems,
+            totalPages,
+            currentPage: page,
+            success: true
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message, success: false });
+    }
+};
+
+module.exports = { getexpenses };
+
+
+
 
 
 
