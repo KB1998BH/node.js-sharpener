@@ -57,12 +57,6 @@ const getexpenses = async (req, res) => {
     }
 };
 
-module.exports = { getexpenses };
-
-
-
-
-
 
 const deleteexpense = (req, res) => {
     const expenseid = req.params.expenseid;

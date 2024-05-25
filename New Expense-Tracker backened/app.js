@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 
 const express = require('express');
 var cors = require('cors')
@@ -8,7 +9,8 @@ const User = require('./models/users');
 const Expense = require('./models/expenses');
 const Order = require('./models/orders');
 const Forgotpassword = require('./models/forgotpassword');
-
+const helmet = require('helmet')
+const morgan = require('morgan');
 
 
 
@@ -18,10 +20,15 @@ const resetPasswordRoutes = require('./routes/resetpassword')
 
 const app = express();
 const dotenv = require('dotenv');
+const { Stream } = require('stream');
 
 // get config vars
 dotenv.config();
 
+const accessLogStream = fs.createWriteStream(
+path.join(__dirname, 'access.log'),
+{flags:'a'}
+);
 
 app.use(cors());
 
@@ -35,6 +42,8 @@ app.use('/purchase', purchaseRoutes)
 
 app.use('/password', resetPasswordRoutes);
 
+app.use(helmet());
+app.use(morgan('combined', {stream:accessLogStream}))
 
 
 User.hasMany(Expense);
